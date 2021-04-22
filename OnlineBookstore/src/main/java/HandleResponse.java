@@ -26,7 +26,7 @@ public class HandleResponse {
                 try
                 {
                     // call the addBook insert method and return the returned string
-                    return Insert.addBook(clientDataArray);
+                    return Insert.addEntry(tableName, clientDataArray);
                 }
                 //if the clientData is an out of bounds integer throw this exception
                 catch (Exception e)
