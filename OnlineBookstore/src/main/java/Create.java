@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 //This class inserts a hardcoded user to the Database.
 //Take care executing this twice, as it will enter in a user with the exact same properties twice.
-public class Insert {
+public class Create {
 
     public static String addEntry(String table, String[] clientDataArray) {
 
@@ -87,7 +87,7 @@ public class Insert {
 
             //add first line to the response
             insertCheck.append("\n~~ '" +
-                    clientDataArray[2].replace("_", " ").toUpperCase() + ", " +
+                    clientDataArray[2].replace("_", " ").toUpperCase() + " " +
                     clientDataArray[3].replace("_", " ").toUpperCase() +
                     "' ADDED TO DATABASE! DETAILS BELOW ~~");
 

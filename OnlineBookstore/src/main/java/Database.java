@@ -76,7 +76,7 @@ public class Database {
          String query1 = "SELECT * FROM " + tableName;
 
          // get the connection and created a prepared statement using above string
-         PreparedStatement statement1 = Database.dbConnection().prepareStatement(query1);
+         PreparedStatement statement1 = dbConnection().prepareStatement(query1);
 
          //Execute Query and save results
          ResultSet resultSet = statement1.executeQuery();

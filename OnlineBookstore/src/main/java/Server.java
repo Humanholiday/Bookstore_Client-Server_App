@@ -32,8 +32,14 @@ public class Server
                     // OutputStream sends data to client, PrintWriter enables text to be sent
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-                    //send string to client to confirm connection
-                    out.println("connected");
+//                    send string to client to confirm connection
+                    String mainMenu = Menu.menu();
+
+                    // add characters to end of response so client reader loop is restarted
+                    String menuConnect = mainMenu + "\n~~/END/~~";
+
+//                    out.println("connected");
+                    out.println(menuConnect);
 
                     //while input is received from the client do this
                     while(in.hasNext())
@@ -49,6 +55,7 @@ public class Server
 
                         //send serverResponse to client
                         out.println(serverResponse);
+
 
                         // HandleResponse.closeConnection();
                     }

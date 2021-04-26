@@ -35,11 +35,24 @@ public class Client
             //Output message to terminal if "connected" string is received from server
             if(checkConnect.equals("connected"))
             {
-                System.out.println(checkConnect);
-                System.out.println("Enter lines of text or type 'quit' to exit \n" +
-                        "Command format - 'table action value(s)'\n" +
-                        "Example - 'book search dune' or 'book add *values*'"
-                );
+//                System.out.println(checkConnect);
+
+                // Read and print multiple lines from server, when line = end then break out of loop
+                while ((checkConnect = in.readLine()) != null)
+                {
+                    if (checkConnect.equals("~~/END/~~"))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        System.out.println(checkConnect);
+                    }
+                }
+//                System.out.println("Enter lines of text or type 'quit' to exit \n" +
+//                        "Command format - 'table action value(s)'\n" +
+//                        "Example - 'book search dune' or 'book add *values*'"
+//                );
             }
             //If auto message is not received from server it is not available so close the socket
             else
