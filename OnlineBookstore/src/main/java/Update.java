@@ -19,62 +19,39 @@ public class Update {
             // start the query
             insert.append("UPDATE `online_book_shop`.`" + table + "` SET ");
 
-            // for each column name in the column names array, append to the SQL statement
+            // boolean to check that user specified column is valid
+            boolean columnValid = false;
+
+            // for each column name in the column names array, check that is is present in the table
             // this searches all columns within the specified table
+                //if the column is present append to sql statement and set columnValid to true
             for(String column : columnNames)
             {
-                //if the column is called "id" dont append as this field auto increments
-                if (column.equalsIgnoreCase("id"))
+                if (column.equalsIgnoreCase(clientDataArray[2]))
                 {
-                    continue;
-                }
-                else
-                {
-                    insert.append("`" + column + "`,");
+                    insert.append(column + " = ? " +
+                            "WHERE " + clientDataArray[7] + " = ? ;");
+                    columnValid = true;
                 }
             }
-            //delete the " ," from the final appended statement
-            insert.deleteCharAt(insert.lastIndexOf(","));
-            insert.append(") VALUES (");
-            // for each column name in the column names array, append to the SQL statement
-            // this searches all columns within the specified table
-            for(String column : columnNames)
+
+            // if columnValid was not set to true in the for loop above, return an error statement to the client
+            if(!columnValid)
             {
-                //if the column is called "id" dont append as this field auto increments
-                if (column.equalsIgnoreCase("id"))
-                {
-                    continue;
-                }
-                else
-                {
-                    insert.append("?,");
-                }
+                return "Column name '" + clientDataArray[2] + "' not found on table " + clientDataArray[0];
             }
-            //delete the " ," from the final appended statement and add ");" to the end
-            insert.deleteCharAt(insert.lastIndexOf(","));
-            insert.append(");");
 
             // get the connection and created a prepared statement using above string
             PreparedStatement statement = conn.prepareStatement(insert.toString());
 
             // add the field parameters to the prepared statement (guards against SQL injection)
             // replace "_" with " " where it is found (used to indicate spaces in the same field during user entry)
-            // if the first column name is "id" (auto incremented value) i < columnNames.length
-            if (columnNames[0].equalsIgnoreCase("id"))
-            {
-                // i < columnNames.length as id column is not auto populated
-                for(int i=1; i < columnNames.length; i++ )
-                {
-                    statement.setString(i, clientDataArray[i+1].replace("_", " "));
-                }
-            }
-            else
-            {
-                for(int i=1; i <= columnNames.length; i++ )
-                {
-                    statement.setString(i, clientDataArray[i+1].replace("_", " "));
-                }
-            }
+            System.out.println(clientDataArray[5]);
+            // new field data
+            statement.setString(1, clientDataArray[5].replace("_", " "));
+            // where field data
+            statement.setString(2, clientDataArray[9].replace("_", " "));
+
 
             // print the sql statement out to the server console
             System.out.println("The SQL statement is: " + insert + "\n");
@@ -83,30 +60,27 @@ public class Update {
             statement.execute();
 
             //create a string builder for saving the results in a flexible format
-            StringBuilder insertCheck = new StringBuilder();
+            StringBuilder updateCheck = new StringBuilder();
 
             //add first line to the response
-            insertCheck.append("\n~~ '" +
+            updateCheck.append("\n~~ '" +
                     clientDataArray[2].replace("_", " ").toUpperCase() + " " +
-                    clientDataArray[3].replace("_", " ").toUpperCase() +
-                    "' ENTRY UPDATED! NEW b1lledcat50!DETAILS BELOW ~~");
+                    clientDataArray[5].replace("_", " ").toUpperCase() +
+                    "' ENTRY UPDATED! NEW DETAILS BELOW ~~");
 
 
             // call the searchBook method and append the response
-            insertCheck.append(Read.searchTable(clientDataArray[0], clientDataArray[3].replace("_", " ")));
+            updateCheck.append(Read.searchTable(clientDataArray[0], clientDataArray[5].replace("_", " ")));
 
             //add final line
-            insertCheck.append("~~~~~~~~~~~~~~~~~~~~");
+            updateCheck.append("~~~~~~~~~~~~~~~~~~~~");
 
             //search for newly entered book
-            return insertCheck.toString();
+            return updateCheck.toString();
 
         }
         catch (SQLException e)
         {
-            //print error message to server console
-            e.printStackTrace();
-
             // create a string builder for the error message to be sent to the client
             StringBuilder errorMessage = new StringBuilder();
 
@@ -116,6 +90,9 @@ public class Update {
                     "\nSQLState: " + ((SQLException) e).getSQLState() +
                     "\nError Code: " + ((SQLException) e).getErrorCode() +
                     "\nMessage: " + e.getMessage());
+
+            //print error message to server console
+            System.out.println(errorMessage);
 
             // return the error message as a string
             return errorMessage.toString();

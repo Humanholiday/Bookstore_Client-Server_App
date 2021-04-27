@@ -1,16 +1,17 @@
-
+import java.sql.SQLException;
 
 public class HandleResponse {
 
     /* SERVER RESPONSE HANDLING METHOD */
     /* TAKES THE CLIENT DATA AND RETURNS THE CORRECT RESPONSE STRING TO BE SENT TO THE CLIENT */
 
-    public static String execute(String clientDataLine)
-    {
+    public static String execute(String clientDataLine) throws SQLException {
         // convert the client string to a string array, trimming whitespace and accounting for tabs and multi-whitespace
         String[] clientDataArray = clientDataLine.trim().split("\\s+");
 
-        /* USER MENU SELECT ACTIONS */
+
+        /* ------------ USER MENU SELECT ACTIONS ------------ */
+
 
         // if the client data is only 1 item, do this as it is a menu select action
         if (clientDataArray.length < 2)
@@ -37,12 +38,15 @@ public class HandleResponse {
         String tableName = clientDataArray[0];
         String command = clientDataArray[1];
 
-        /* DATABASE TABLE ACTIONS */
+
+        /* ------------ DATABASE TABLE ACTIONS ------------ */
+
 
         // if the first array item is a valid table name do this
         if(Database.tableNameExists(tableName.toLowerCase()))
         {
-            /* ADD AN ENTRY TO THE DATABASE */
+
+            /* ------------ ADD AN ENTRY TO THE DATABASE ------------ */
 
             // if the second array item is 'add' do this
             if(command.equalsIgnoreCase("add"))
@@ -57,9 +61,10 @@ public class HandleResponse {
                 {
                     return "Server exception: " + e.getMessage();
                 }
-
             }
-            /* SEARCH THE DATABASE  */
+
+
+            /* ------------ SEARCH THE DATABASE ------------  */
 
             // if the second array item is 'search' do this
             else if (command.equalsIgnoreCase("search"))
@@ -76,6 +81,7 @@ public class HandleResponse {
                         searchTermBuilder.append(clientDataArray[i] + " ");
                     }
 
+                    // convert StringBuilder to a string and trim whitespace
                     String searchTerm = searchTermBuilder.toString().trim();
 
                     //create a string builder for saving the results in a flexible format
@@ -92,6 +98,7 @@ public class HandleResponse {
                     // add final line to the response
                     response.append("\n~~/END OF SEARCH/~~");
 
+                    // convert response StringBuilder to a string and return result to the server
                     return response.toString();
                 }
                 //if the clientData is an out of bounds integer throw this exception
@@ -101,7 +108,64 @@ public class HandleResponse {
                 }
 
             }
-            /* BOOK COMMAND IS NOT RECOGNISED */
+
+
+            /* ------------ UPDATE A DATABASE ENTRY ------------ */
+
+            // if the second array item is 'update' do this
+            else if(command.equalsIgnoreCase("update"))
+            {
+                if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[2], clientDataArray[3])
+                && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9]))
+                {
+                    try
+                    {
+                        // call the addBook insert method and return the returned string
+                        return Update.updateEntry(tableName, clientDataArray);
+                    }
+                    //if the clientData is an out of bounds integer throw this exception
+                    catch (Exception e) {
+                        return "Server exception: " + e.getMessage();
+                    }
+                }
+                else
+                {
+                    return "Error, " + clientDataArray[2] + " = " + clientDataArray[3] +
+                        " , " + clientDataArray[7] + " = " + clientDataArray[9] + " does not exist " +
+                            "on table '" + clientDataArray[0] + "'";
+                }
+
+            }
+
+            /* ------------ DELETE A DATABASE ENTRY ------------ */
+
+            //book delete where title = the_count_of_monte_cristo
+
+            // if the second array item is 'delete' do this
+            else if(command.equalsIgnoreCase("delete"))
+            {
+                if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
+                {
+                    try
+                    {
+                        // call the addBook insert method and return the returned string
+                        return Delete.deleteEntry(tableName, clientDataArray);
+                    }
+                    //if the clientData is an out of bounds integer throw this exception
+                    catch (Exception e) {
+                        return "Server exception: " + e.getMessage();
+                    }
+                }
+                else
+                {
+                    return "Error, '" + clientDataArray[3] + " = " + clientDataArray[5] + "' does not exist " +
+                            "on table '" + clientDataArray[0] + "'";
+                }
+
+            }
+
+
+            /* ------------ BOOK COMMAND IS NOT RECOGNISED ------------ */
 
             else
             {

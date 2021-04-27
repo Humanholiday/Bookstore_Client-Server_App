@@ -49,7 +49,8 @@ public class Menu
                 ("-----------------------------\n" +
                 "| Create a new database entry |\n" +
                 "-----------------------------\n" +
-                "Type TABLENAME ADD FIELDS.....\n" +
+                "Type TABLENAME ADD ISBN TITLE AUTHOR PUBLISHER LANGUAGE STOCK PRICE\n" +
+                "Use _ for separate words in the same field\n" +
                 "Examples -\n" +
                 "book add 5436596 Fiesta Ernest_Hemingway HarperCollins English 4 10.99\n" +
                 "customer add John Henry 016154309675 johnhenry@gmail.com\n" +
@@ -66,6 +67,7 @@ public class Menu
                 "|   Search the database      |\n" +
                 "------------------------------\n" +
                 "Type TABLENAME SEARCH FIELD\n" +
+                "Dont worry about spaces\n" +
                 "Examples -\n" +
                 "book search the count of monte cristo\n" +
                 "customer search jack\n" +
@@ -81,10 +83,10 @@ public class Menu
                 ("------------------------------\n" +
                 "|   Update a database entry   |\n" +
                 "------------------------------\n" +
-                "Type TABLENAME UPDATE FIELD WITH NEW_FIELD WHERE OTHER_FIELD IS *\n" +
+                "Type TABLENAME UPDATE FIELD TO NEW_FIELD WHERE OTHER_FIELD IS *\n" +
                 "Examples -\n" +
-                "book update title the raod to the road where author is cormac_mccarthy\n" +
-                "customer update firstname Jcak to Jack where email is jack@jack.com\n" +
+                "book update title the_road to the_raod where author is cormac_mccarthy\n" +
+                "customer update fname Jack to Josh where email is jack@jack.jack\n" +
                 "Or type 'return' to go back to the main menu or 'quit' to exit the application");
 
         return bookstoreMenu;
@@ -97,10 +99,10 @@ public class Menu
                 ("------------------------------\n" +
                         "|   Delete a database entry    |\n" +
                         "------------------------------\n" +
-                        "Type TABLENAME DELETE FIELD\n" +
+                        "Type TABLENAME DELETE WHERE COLUMN = FIELD\n" +
                         "Examples -\n" +
-                        "book delete the count of monte cristo\n" +
-                        "customer delete jack\n" +
+                        "book delete where title = the_count_of_monte_cristo\n" +
+                        "customer delete where fname = jack\n" +
                         "Or type 'return' to go back to the main menu or 'quit' to exit the application");
 
         return bookstoreMenu;

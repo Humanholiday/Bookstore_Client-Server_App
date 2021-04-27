@@ -111,4 +111,42 @@ public class Database {
             return false;
         }
     }
+
+    // method to check that user submitted fields exist and are valid in the database before proceeding with an update/delete
+    // this provides protection against injecting * into the statement and limits the amount of records to be updated
+    public static boolean updateDeleteDataCheck(String table, String column, String field) throws SQLException
+    {
+        try
+        {
+            // save the query to a string variable
+            String query = "SELECT * FROM " + table + " WHERE " + column + " = ?;";
+
+            // get the connection and created a prepared statement using above string
+            PreparedStatement statement = Database.dbConnection().prepareStatement(query);
+
+            // set the field parameter - prepared statement guards against sql injection
+            statement.setString(1, field.trim().replace("_", " "));
+
+            //Execute Query and save results
+            ResultSet rs = statement.executeQuery();
+
+            // if the result set is empty return false as there is no such database entry, if it is not empty return true
+            if(!rs.isBeforeFirst())
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        catch(SQLException e)
+        {
+            return false;
+        }
+    }
 }
+
+
+
