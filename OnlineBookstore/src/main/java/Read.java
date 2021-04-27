@@ -83,8 +83,14 @@ public class Read {
         }
         catch(SQLException e)
         {
-            e.printStackTrace();
+            // get a formatted error message from the sql exception utility method
+            String msg = Utils.SQLExceptionMSg(e);
+
+            //print message to console
+            System.out.println(msg);
+
+            //return message to client
+            return msg;
         }
-        return null;
     }
 }

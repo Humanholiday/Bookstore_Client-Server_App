@@ -81,21 +81,14 @@ public class Update {
         }
         catch (SQLException e)
         {
-            // create a string builder for the error message to be sent to the client
-            StringBuilder errorMessage = new StringBuilder();
+            // get a formatted error message from the sql exception utility method
+            String msg = Utils.SQLExceptionMSg(e);
 
-            // add error message details to the stringbuilder
-            errorMessage.append("Error, entry not added " +
-                    "\nError details -" +
-                    "\nSQLState: " + ((SQLException) e).getSQLState() +
-                    "\nError Code: " + ((SQLException) e).getErrorCode() +
-                    "\nMessage: " + e.getMessage());
+            //print message to console
+            System.out.println(msg);
 
-            //print error message to server console
-            System.out.println(errorMessage);
-
-            // return the error message as a string
-            return errorMessage.toString();
+            //return message to client
+            return msg;
         }
     }
 }

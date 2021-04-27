@@ -59,7 +59,7 @@ public class HandleResponse {
                 //if the clientData is an out of bounds integer throw this exception
                 catch (Exception e)
                 {
-                    return "Server exception: " + e.getMessage();
+                    return "Error - addition not processed: " + e.getMessage();
                 }
             }
 
@@ -104,7 +104,7 @@ public class HandleResponse {
                 //if the clientData is an out of bounds integer throw this exception
                 catch (Exception e)
                 {
-                    return "Server exception: " + e.getMessage();
+                    return "Error - search not processed: " + e.getMessage();
                 }
 
             }
@@ -115,24 +115,27 @@ public class HandleResponse {
             // if the second array item is 'update' do this
             else if(command.equalsIgnoreCase("update"))
             {
-                if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[2], clientDataArray[3])
-                && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9]))
+                try
                 {
-                    try
-                    {
-                        // call the addBook insert method and return the returned string
-                        return Update.updateEntry(tableName, clientDataArray);
-                    }
-                    //if the clientData is an out of bounds integer throw this exception
-                    catch (Exception e) {
-                        return "Server exception: " + e.getMessage();
+                    if (Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[2], clientDataArray[3])
+                            && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9])) {
+                        try {
+                            // call the addBook insert method and return the returned string
+                            return Update.updateEntry(tableName, clientDataArray);
+                        }
+                        //if the clientData is an out of bounds integer throw this exception
+                        catch (Exception e) {
+                            return "Server exception: " + e.getMessage();
+                        }
+                    } else {
+                        return "Error, " + clientDataArray[2] + " = " + clientDataArray[3] +
+                                " , " + clientDataArray[7] + " = " + clientDataArray[9] + " does not exist " +
+                                "on table '" + clientDataArray[0] + "'";
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    return "Error, " + clientDataArray[2] + " = " + clientDataArray[3] +
-                        " , " + clientDataArray[7] + " = " + clientDataArray[9] + " does not exist " +
-                            "on table '" + clientDataArray[0] + "'";
+                    return "Error - update not processed: " + e.getMessage();
                 }
 
             }
@@ -144,22 +147,29 @@ public class HandleResponse {
             // if the second array item is 'delete' do this
             else if(command.equalsIgnoreCase("delete"))
             {
-                if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
+                try
                 {
-                    try
+                    if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
                     {
-                        // call the addBook insert method and return the returned string
-                        return Delete.deleteEntry(tableName, clientDataArray);
+                        try
+                        {
+                            // call the addBook insert method and return the returned string
+                            return Delete.deleteEntry(tableName, clientDataArray);
+                        }
+                        //if the clientData is an out of bounds integer throw this exception
+                        catch (Exception e) {
+                            return "Server exception: " + e.getMessage();
+                        }
                     }
-                    //if the clientData is an out of bounds integer throw this exception
-                    catch (Exception e) {
-                        return "Server exception: " + e.getMessage();
+                    else
+                    {
+                        return "Error, '" + clientDataArray[3] + " = " + clientDataArray[5] + "' does not exist " +
+                                "on table '" + clientDataArray[0] + "'";
                     }
                 }
-                else
+                    catch (Exception e)
                 {
-                    return "Error, '" + clientDataArray[3] + " = " + clientDataArray[5] + "' does not exist " +
-                            "on table '" + clientDataArray[0] + "'";
+                    return "Error - update not processed: " + e.getMessage();
                 }
 
             }

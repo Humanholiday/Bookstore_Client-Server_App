@@ -103,21 +103,14 @@ public class Create {
         }
         catch (SQLException e)
         {
-            //print error message to server console
-            e.printStackTrace();
+            // get a formatted error message from the sql exception utility method
+            String msg = Utils.SQLExceptionMSg(e);
 
-            // create a string builder for the error message to be sent to the client
-            StringBuilder errorMessage = new StringBuilder();
+            //print message to console
+            System.out.println(msg);
 
-            // add error message details to the stringbuilder
-            errorMessage.append("Error, entry not added " +
-                    "\nError details -" +
-                    "\nSQLState: " + ((SQLException) e).getSQLState() +
-                    "\nError Code: " + ((SQLException) e).getErrorCode() +
-                    "\nMessage: " + e.getMessage());
-
-            // return the error message as a string
-            return errorMessage.toString();
+            //return message to client
+            return msg;
         }
     }
 }
