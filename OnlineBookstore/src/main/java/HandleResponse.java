@@ -5,19 +5,20 @@ public class HandleResponse {
     /* SERVER RESPONSE HANDLING METHOD */
     /* TAKES THE CLIENT DATA AND RETURNS THE CORRECT RESPONSE STRING TO BE SENT TO THE CLIENT */
 
-    public static String execute(String clientDataLine) throws SQLException {
+    public static String execute(String clientDataLine) throws SQLException
+    {
+
         // convert the client string to a string array, trimming whitespace and accounting for tabs and multi-whitespace
         String[] clientDataArray = clientDataLine.trim().split("\\s+");
 
 
-        /* ------------ USER MENU SELECT ACTIONS ------------ */
+        /********* USER MENU SELECT ACTIONS *********/
 
-
-        // if the client data is only 1 item, do this as it is a menu select action
+        // if the client data is only 1 item, treat it as a menu select action
         if (clientDataArray.length < 2)
         {
-            // call the isInteger method and if it returns true call the menuSelect method and return result
-            if (isInteger(clientDataArray[0]))
+            // call the utility isInteger method and if it returns true call the menuSelect method and return result
+            if (Utils.isInteger(clientDataArray[0]))
             {
                 return Menu.menuSelect(Integer.parseInt(clientDataArray[0]));
             }
@@ -34,29 +35,29 @@ public class HandleResponse {
             }
         }
 
-        // assign the first 2 items in the array to relevant variables
+        // assign the first 2 items in the array to instruction variables
         String tableName = clientDataArray[0];
         String command = clientDataArray[1];
 
 
-        /* ------------ DATABASE TABLE ACTIONS ------------ */
+        /********* DATABASE TABLE ACTIONS *********/
 
 
-        // if the first array item is a valid table name do this
+        // check that the tablename is valid
         if(Database.tableNameExists(tableName.toLowerCase()))
         {
 
             /* ------------ ADD AN ENTRY TO THE DATABASE ------------ */
 
-            // if the second array item is 'add' do this
+            // if the command variable is 'add' do this
             if(command.equalsIgnoreCase("add"))
             {
                 try
                 {
-                    // call the addBook insert method and return the returned string
+                    // call the addEntry insert method and return the result
                     return Create.addEntry(tableName, clientDataArray);
                 }
-                //if the clientData is an out of bounds integer throw this exception
+                //catch exceptions and return the error
                 catch (Exception e)
                 {
                     return "Error - addition not processed: " + e.getMessage();
@@ -71,7 +72,7 @@ public class HandleResponse {
             {
                 try
                 {
-                    //create a string builder for the book title
+                    //create a string builder for the book title search term
                     StringBuilder searchTermBuilder = new StringBuilder();
 
                     //loop through the array from the 3rd element and join the strings,
@@ -81,10 +82,10 @@ public class HandleResponse {
                         searchTermBuilder.append(clientDataArray[i] + " ");
                     }
 
-                    // convert StringBuilder to a string and trim whitespace
+                    // convert StringBuilder to a string and trim whitespace from the end
                     String searchTerm = searchTermBuilder.toString().trim();
 
-                    //create a string builder for saving the results in a flexible format
+                    //create a string builder for saving the returned result in a flexible format
                     StringBuilder response = new StringBuilder();
 
                     //add first line to the response
@@ -92,16 +93,16 @@ public class HandleResponse {
                             "' ON TABLE '" + tableName.toUpperCase() +
                             "'/~~\n");
 
-                    // call the searchTable method and append the response
+                    // call the searchTable method and append the result
                     response.append(Read.searchTable(tableName, searchTerm));
 
                     // add final line to the response
                     response.append("\n~~/END OF SEARCH/~~");
 
-                    // convert response StringBuilder to a string and return result to the server
+                    // convert response to a string and return the result
                     return response.toString();
                 }
-                //if the clientData is an out of bounds integer throw this exception
+                //catch exceptions and return the error
                 catch (Exception e)
                 {
                     return "Error - search not processed: " + e.getMessage();
@@ -117,22 +118,33 @@ public class HandleResponse {
             {
                 try
                 {
+                    /* Check that user submitted fields exist and are valid in the database
+                    before proceeding with an update/delete.
+                    This provides protection against injecting * into the statement
+                    and limits the amount of records to be updated */
                     if (Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[2], clientDataArray[3])
-                            && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9])) {
-                        try {
-                            // call the addBook insert method and return the returned string
+                        && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9]))
+                    {
+                        try
+                        {
+                            // call the updateEntry method and return the result
                             return Update.updateEntry(tableName, clientDataArray);
                         }
-                        //if the clientData is an out of bounds integer throw this exception
-                        catch (Exception e) {
-                            return "Server exception: " + e.getMessage();
+                        //catch exceptions and return the error
+                        catch (Exception e)
+                        {
+                            return "Error - update not processed: " + e.getMessage();
                         }
-                    } else {
+                    }
+                    // if the data check fails return an error message
+                    else
+                    {
                         return "Error, " + clientDataArray[2] + " = " + clientDataArray[3] +
                                 " , " + clientDataArray[7] + " = " + clientDataArray[9] + " does not exist " +
                                 "on table '" + clientDataArray[0] + "'";
                     }
                 }
+                //catch exceptions and return the error
                 catch (Exception e)
                 {
                     return "Error - update not processed: " + e.getMessage();
@@ -149,62 +161,54 @@ public class HandleResponse {
             {
                 try
                 {
+                    /* Check that user submitted fields exist and are valid in the database
+                    before proceeding with an update/delete.
+                    This provides protection against injecting * into the statement
+                    and limits the amount of records to be updated */
                     if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
                     {
                         try
                         {
-                            // call the addBook insert method and return the returned string
+                            // call the deleteEntry method and return the result
                             return Delete.deleteEntry(tableName, clientDataArray);
                         }
-                        //if the clientData is an out of bounds integer throw this exception
-                        catch (Exception e) {
-                            return "Server exception: " + e.getMessage();
+                        //catch exceptions and return the error
+                        catch (Exception e)
+                        {
+                            return "Error - delete not processed: " + e.getMessage();
                         }
                     }
+                    // if the data check fails return an error message
                     else
                     {
                         return "Error, '" + clientDataArray[3] + " = " + clientDataArray[5] + "' does not exist " +
                                 "on table '" + clientDataArray[0] + "'";
                     }
                 }
-                    catch (Exception e)
+                //catch exceptions and return the error
+                catch (Exception e)
                 {
-                    return "Error - update not processed: " + e.getMessage();
+                    return "Error - delete not processed: " + e.getMessage();
                 }
-
             }
 
 
             /* ------------ BOOK COMMAND IS NOT RECOGNISED ------------ */
 
+            // if the command does not exist return an error message
             else
             {
                 return "No action exists for command '" + clientDataArray[1] + "' on table '" + clientDataArray[0] + "'";
             }
         }
+
+
         /* TABLE DOES NOT EXIST */
 
+        // if the table does not exist return an error message
         else
         {
             return "Table '" + clientDataArray[0]  + "' does not exist, please try again";
         }
-    }
-
-    // method to check that client data is an integer - for menu select actions
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch(NumberFormatException e) {
-            return false;
-        } catch(NullPointerException e) {
-            return false;
-        }
-        // only got here if we didn't return false
-        return true;
-    }
-
-    public static void closeConnection()  // CONCERN - connection is not currently closed as try with resources removed
-    {
-
     }
 }

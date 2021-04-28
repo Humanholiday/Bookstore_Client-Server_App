@@ -2,7 +2,7 @@ import java.sql.SQLException;
 
 public class Utils
 {
-    // method to return a formatted sql exception message
+    /***** method to return a formatted sql exception message *****/
 
     public static String SQLExceptionMSg (SQLException e)
     {
@@ -18,4 +18,28 @@ public class Utils
         // return the error message as a string
         return errorMessage.toString();
     }
+
+    /***** method to check that client data is an integer - for menu select actions *****/
+
+    public static boolean isInteger(String s)
+    {
+        // try to parse the data to an integer
+        try
+        {
+            Integer.parseInt(s);
+        }
+        //catch exceptions if the data is not an integer format and return false
+        catch(NumberFormatException e)
+        {
+            return false;
+        }
+        // catch exceptions if the data is empty and return false
+        catch(NullPointerException e)
+        {
+            return false;
+        }
+        // return true if no exceptions were thrown
+        return true;
+    }
+
 }

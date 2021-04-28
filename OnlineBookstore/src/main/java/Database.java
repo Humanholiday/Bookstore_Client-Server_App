@@ -7,7 +7,34 @@ import java.util.Properties;
 
 public class Database {
 
-    /* Get the database connection and return the connection statement */
+    /* GET THE STORED DATABASE PROPERTIES FROM THE DB.PROPERTIES FILE */
+
+    public static Properties dbProps()
+    {
+        //try with resources (resources = get ~InputStream using file specified props
+        try (InputStream input = new FileInputStream("src/main/resources/db.properties")) {
+
+            // create a properties object
+            Properties prop = new Properties();
+
+            // load a properties file
+            prop.load(input);
+
+            // return the properties
+            return prop;
+
+        }
+        // catch exceptions and print stack trace to server console
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /* MAKE THE DATABASE CONNECTION AND RETURN  */
+
     public static Connection dbConnection() throws SQLException
     {
         //Get the properties stored in the db.properties file
@@ -25,28 +52,12 @@ public class Database {
     }
 
 
-    /* get the stored database properties from the db.properties file */
-    public static Properties dbProps()
-    {
-        try (InputStream input = new FileInputStream("src/main/resources/db.properties")) {
-
-            Properties prop = new Properties();
-
-            // load a properties file
-            prop.load(input);
-
-            return prop;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
     /* GET AN ARRAYLIST OF ALL DATABASE TABLE NAMES*/
+
     public static ArrayList getDatabaseTableNames()
     {
-        try {
+        try
+        {
             // connect to the database and get its metaData
             DatabaseMetaData dbmd = Database.dbConnection().getMetaData();
             // define the type of table required, in ths case {"TABLE"} accesses the high level table names only
@@ -57,21 +68,31 @@ public class Database {
             ArrayList tableNames  = new ArrayList();
 
             //while the ResultSet contains values, add these values to the ArrayList
-            while (rs.next()) {
+            while (rs.next())
+            {
                 tableNames.add(rs.getString("TABLE_NAME"));
             }
 
             //return the ArrayList of table names
             return tableNames;
         }
-        catch (SQLException e) {
-            e.printStackTrace();
+        // catch exceptions and print a formatted error message
+        catch (SQLException e)
+        {
+            // get a formatted error message from the sql exception utility method
+            String msg = Utils.SQLExceptionMSg(e);
+
+            //print message to console
+            System.out.println(msg);
         }
         return null;
      }
 
+
     /* GET ALL COLUMN NAMES FROM THE SPECIFIED TABLE*/
-     public static String[] getColumnNames(String tableName) throws SQLException {
+
+     public static String[] getColumnNames(String tableName) throws SQLException
+     {
 
          String query1 = "SELECT * FROM " + tableName;
 
@@ -95,7 +116,8 @@ public class Database {
 
 
 
-    /* check to see if the database contains a client specified table name */
+    /* CHECK TO SEE IF THE DATABASE CONTAINS A CLIENT SPECIFIED TABLE NAME */
+
     public static boolean tableNameExists(String tableName)
     {
         // get the ArrayList of all current high level table names
@@ -112,8 +134,10 @@ public class Database {
         }
     }
 
-    // method to check that user submitted fields exist and are valid in the database before proceeding with an update/delete
+    /*  CHECK THAT USER SUBMITTED FIELDS EXIST AND ARE VALID IN THE DATABASE BEFORE PROCEEDING WITH AN UPDATE/DELETE */
+
     // this provides protection against injecting * into the statement and limits the amount of records to be updated
+
     public static boolean updateDeleteDataCheck(String table, String column, String field) throws SQLException
     {
         try
@@ -130,15 +154,8 @@ public class Database {
             //Execute Query and save results
             ResultSet rs = statement.executeQuery();
 
-            // if the result set is empty return false as there is no such database entry, if it is not empty return true
-            if(!rs.isBeforeFirst())
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            // if the result set is empty return false as there is no database entry, if it is not empty return true
+            return rs.isBeforeFirst();
         }
 
         catch(SQLException e)

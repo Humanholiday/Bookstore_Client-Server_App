@@ -2,12 +2,11 @@ public class Menu
 {
     //********** METHODS TO RETURN MENU HEADERS **************
 
-    // returns main menu string
+    // returns main menu string, 'connected' is not printed on the client side but lets the client know that a
+    //connection to the server has been made
     public static String menu()
     {
-        StringBuilder menu = new StringBuilder();
-        // Creating the header for our menu
-                menu.append("connected\n" +
+        String menu = "connected\n" +
                 "-----------------------------------\n" +
                 "| Welcome to the Online Book Store |\n" +
                 "-----------------------------------\n" +
@@ -16,13 +15,12 @@ public class Menu
                 "2) Search the database\n" +
                 "3) Update a database entry\n" +
                 "4) Delete a database entry\n" +
-                "Or type 'quit' to exit the application");
+                "Or type 'quit' to exit the application";
 
-        return menu.toString();
+        return menu;
     }
 
-
-    // Method to run the main menu
+    // Method to run the menu select using a switch statement
     protected static String menuSelect(int choice) {
         switch (choice) {
             case 1:
