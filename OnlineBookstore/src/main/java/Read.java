@@ -13,14 +13,12 @@ public class Read
 
     public static String searchTable(String table, String searchTerm)
     {
-
         try
         {
-
             /********* BUILD THE SQL QUERY *********/
 
             // call the get column names method and save results in a string array
-            String[] columnNames = Database.getColumnNames(table);
+            String[] columnNames = UtilsDatabase.getColumnNames(table);
 
             //Build SQL statement
             StringBuilder query = new StringBuilder();
@@ -43,7 +41,7 @@ public class Read
             /********* ADD PARAMETERS TO THE PREPARED STATEMENT *********/
 
             // get the connection and created a prepared statement using above string
-            PreparedStatement statement = Database.dbConnection().prepareStatement(query.toString());
+            PreparedStatement statement = UtilsDatabase.dbConnection().prepareStatement(query.toString());
 
 
             // add the search parameter to the prepared statement
@@ -96,6 +94,7 @@ public class Read
             //convert the stringbuilder to a string and return
             return response.toString();
         }
+
         // catch exceptions and return a formatted error message
         catch(SQLException e)
         {

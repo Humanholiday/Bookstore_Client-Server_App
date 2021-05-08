@@ -1,9 +1,12 @@
 public class Menu
 {
+
     //********** METHODS TO RETURN MENU HEADERS **************
 
-    // returns main menu string, 'connected' is not printed on the client side but lets the client know that a
-    //connection to the server has been made
+
+    /* ------------ RETURNS MAIN MENU ------------ */
+    /* returns main menu string, 'connected' is not printed on the client side but lets the client know that a
+    connection to the server has been made */
     public static String menu()
     {
         String menu = "connected\n" +
@@ -20,29 +23,28 @@ public class Menu
         return menu;
     }
 
-    // Method to run the menu select using a switch statement
+    /* ------------ METHOD WITH SWITCH STATEMENT TO RETURN THE MENU BASED ON USER SELECTION ------------ */
+
     protected static String menuSelect(int choice) {
         switch (choice) {
             case 1:
                 return create();
-//                break;
             case 2:
                 return search();
-//                break;
             case 3:
                 return update();
-//                break;
             case 4:
                 return delete();
-//                break;
             default:
                 return "Menu selection is out of range";
         }
     }
 
+    /* ------------ RETURNS CREATE MENU ------------ */
+
     public static String create()
     {
-        // Creating the header for our menu
+        // Creating the header for the menu
         String bookstoreMenu =
                 ("-----------------------------\n" +
                 "| Create a new database entry |\n" +
@@ -56,6 +58,8 @@ public class Menu
 
         return bookstoreMenu;
     }
+
+    /* ------------ RETURNS SEARCH MENU ------------ */
 
     public static String search()
     {
@@ -74,6 +78,8 @@ public class Menu
         return bookstoreMenu;
     }
 
+    /* ------------ RETURNS UPDATE MENU ------------ */
+
     public static String update()
     {
         // Creating the header for our menu
@@ -90,18 +96,20 @@ public class Menu
         return bookstoreMenu;
     }
 
+    /* ------------ RETURNS DELETE MENU ------------ */
+
     public static String delete()
     {
         // Creating the header for our menu
         String bookstoreMenu =
                 ("------------------------------\n" +
-                        "|   Delete a database entry    |\n" +
-                        "------------------------------\n" +
-                        "Type TABLENAME DELETE WHERE COLUMN = FIELD\n" +
-                        "Examples -\n" +
-                        "book delete where title = the_count_of_monte_cristo\n" +
-                        "customer delete where fname = jack\n" +
-                        "Or type 'return' to go back to the main menu or 'quit' to exit the application");
+                "|   Delete a database entry    |\n" +
+                "------------------------------\n" +
+                "Type TABLENAME DELETE WHERE COLUMN = FIELD\n" +
+                "Examples -\n" +
+                "book delete where title = the_count_of_monte_cristo\n" +
+                "customer delete where fname = jack\n" +
+                "Or type 'return' to go back to the main menu or 'quit' to exit the application");
 
         return bookstoreMenu;
     }

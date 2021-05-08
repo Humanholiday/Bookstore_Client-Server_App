@@ -19,6 +19,7 @@ public class Utils
         return errorMessage.toString();
     }
 
+
     /***** method to check that client data is an integer - for menu select actions *****/
 
     public static boolean isInteger(String s)
@@ -41,5 +42,4 @@ public class Utils
         // return true if no exceptions were thrown
         return true;
     }
-
 }

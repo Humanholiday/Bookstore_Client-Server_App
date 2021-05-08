@@ -8,20 +8,19 @@ public class Delete
 {
     /******** DELETE AN ENTRY **********/
 
-
     /******** CLIENT MUST SPECIFY A VALID TABLE AND VALID EXISTING COLUMN AND FIELD DATA **********/
 
     public static String deleteEntry(String table, String[] clientDataArray)
     {
 
         // try with resources (resources = make the database connection)
-        try (Connection conn = Database.dbConnection())
+        try (Connection conn = UtilsDatabase.dbConnection())
         {
 
             /********* BUILD THE SQL QUERY *********/
 
             // call the get column names method and save results in a string array
-            String[] columnNames = Database.getColumnNames(table);
+            String[] columnNames = UtilsDatabase.getColumnNames(table);
 
             //Build SQL statement
             StringBuilder delete = new StringBuilder();
@@ -71,7 +70,7 @@ public class Delete
             statement.execute();
 
 
-            /********* RUN A SUCCESS CHECK *********/
+            /********* RUN A SUCCESS CHECK AND RETURN A RESPONSE TO THE CLIENT *********/
 
             // call the searchTable method using the original client data and save the result
             String successCheck = Read.searchTable(

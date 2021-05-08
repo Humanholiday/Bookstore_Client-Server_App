@@ -4,14 +4,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+//THIS CLASS RECEIVES AND SENDS DATA TO THE CLIENT
+
 public class Server
 {
-
-    /* SERVER CLIENT COMMUNICATION METHOD*/
-    /* RECEIVES AND SENDS DATA TO CLIENT */
-
+    /* RUN IS THE ONLY METHOD IN THIS CLASS, IT IS CALLED BY THE MAIN METHOD WHEN THE APPLICATION BEGINS RUNNING */
     public static void run(Integer port) throws IOException {
 
+        // define running message
         String runningMessage = "The server is running on port " + port;
 
         // try with resources so it closes after try statement is completed and does not require finally() statement
@@ -32,14 +32,11 @@ public class Server
                     // OutputStream sends data to client, PrintWriter enables text to be sent
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-//                    send string to client to confirm connection
-                    String mainMenu = Menu.menu();
-
                     // add characters to end of response so client reader loop is restarted
-                    String menuConnect = mainMenu + "\n~~/END/~~";
+                    String mainMenu = Menu.menu() + "\n~~/END/~~";
 
-//                    out.println("connected");
-                    out.println(menuConnect);
+                    //send menu string to the client, also confirms connection with the client
+                    out.println(mainMenu);
 
                     //while input is received from the client do this
                     while(in.hasNext())
@@ -55,18 +52,19 @@ public class Server
 
                         //send serverResponse to client
                         out.println(serverResponse);
-
-
-                        // HandleResponse.closeConnection();
                     }
                 }
+
+                //catch exceptions and print error message
                 catch(Exception e)
                 {
                     System.out.println("Server exception: " + e.getMessage());
                 }
+
                 // when a client connection is ended do this
                 finally
                 {
+                    // print a message to the console to indicate client has disconnected or throw an exception
                     try
                     {
                         System.out.println("The client has disconnected");

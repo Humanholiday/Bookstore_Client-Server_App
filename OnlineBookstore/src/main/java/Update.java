@@ -6,23 +6,20 @@ import java.sql.SQLException;
 
 public class Update
 {
-    /******** UPDATE AN ENTRY **********/
-
     /******** CLIENT MUST SPECIFY A VALID TABLE AND VALID EXISTING COLUMN AND FIELD DATA **********/
-
     public static String updateEntry(String table, String[] clientDataArray)
     {
 
         // try with resources (resources = make the database connection)
-        try (Connection conn = Database.dbConnection())
+        try (Connection conn = UtilsDatabase.dbConnection())
         {
 
             /********* BUILD THE SQL QUERY *********/
 
             // call the get column names method and save results in a string array
-            String[] columnNames = Database.getColumnNames(table);
+            String[] columnNames = UtilsDatabase.getColumnNames(table);
 
-            //Build SQL statement
+            //StringBuilder for SQL statement
             StringBuilder update = new StringBuilder();
 
             // start the query
@@ -31,9 +28,8 @@ public class Update
             // boolean to check that user specified column is valid
             boolean columnValid = false;
 
-            // for each column name in the column names array, check that is is present in the table
-            // this searches all columns within the specified table
-                //if the column is present append to sql statement and set columnValid to true
+            // loop through each column name in the column names array
+            //if the column name = client defined column name, append to sql statement and set columnValid to true
             for(String column : columnNames)
             {
                 if (column.equalsIgnoreCase(clientDataArray[2]))
@@ -72,7 +68,7 @@ public class Update
             statement.execute();
 
 
-            /********* RUN A SUCCESS CHECK *********/
+            /********* RUN A SUCCESS CHECK AND RETURN A RESPONSE TO THE CLIENT *********/
 
             // call the searchTable method using the original client data and save the result
             String successCheck = Read.searchTable(
@@ -110,6 +106,7 @@ public class Update
                 return checkResult.toString();
             }
         }
+
         // catch exceptions and return a formatted error message
         catch (SQLException e)
         {

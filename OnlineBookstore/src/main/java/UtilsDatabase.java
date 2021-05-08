@@ -5,14 +5,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class Database {
+//THIS CLASS CONTAINS DATABASE UTILITY METHODS
+
+public class UtilsDatabase
+{
 
     /* GET THE STORED DATABASE PROPERTIES FROM THE DB.PROPERTIES FILE */
 
     public static Properties dbProps()
     {
         //try with resources (resources = get ~InputStream using file specified props
-        try (InputStream input = new FileInputStream("src/main/resources/db.properties")) {
+        try (InputStream input = new FileInputStream("src/main/resources/db.properties"))
+        {
 
             // create a properties object
             Properties prop = new Properties();
@@ -59,11 +63,14 @@ public class Database {
         try
         {
             // connect to the database and get its metaData
-            DatabaseMetaData dbmd = Database.dbConnection().getMetaData();
+            DatabaseMetaData dbmd = UtilsDatabase.dbConnection().getMetaData();
+
             // define the type of table required, in ths case {"TABLE"} accesses the high level table names only
             String[] types = {"TABLE"};
+
             // extract the table names into a ResultSet
             ResultSet rs = dbmd.getTables(null, null, "%", types);
+
             // initialise and ArrayList to store the table names
             ArrayList tableNames  = new ArrayList();
 
@@ -86,14 +93,15 @@ public class Database {
             System.out.println(msg);
         }
         return null;
-     }
+    }
 
 
-    /* GET ALL COLUMN NAMES FROM THE SPECIFIED TABLE*/
+    /* GET ALL COLUMN NAMES FROM A SPECIFIED TABLE*/
 
      public static String[] getColumnNames(String tableName) throws SQLException
      {
 
+         // prepare SQL query
          String query1 = "SELECT * FROM " + tableName;
 
          // get the connection and created a prepared statement using above string
@@ -102,18 +110,24 @@ public class Database {
          //Execute Query and save results
          ResultSet resultSet = statement1.executeQuery();
 
+         // get the meta data from the result set
          ResultSetMetaData metaData = resultSet.getMetaData();
-         int count = metaData.getColumnCount(); //number of column
+
+         // count the number of columns deifned in the meta data
+         int count = metaData.getColumnCount();
+
+         // create a String array with the same length as the number of columns
          String columnNames[] = new String[count];
 
+         // add the column names to the array
          for (int i = 1; i <= count; i++)
          {
              columnNames[i-1] = metaData.getColumnLabel(i);
-//                System.out.println(columnName[i-1]);
          }
-      return columnNames;
-     }
 
+         //return the String array of column names
+         return columnNames;
+     }
 
 
     /* CHECK TO SEE IF THE DATABASE CONTAINS A CLIENT SPECIFIED TABLE NAME */
@@ -134,10 +148,10 @@ public class Database {
         }
     }
 
+
     /*  CHECK THAT USER SUBMITTED FIELDS EXIST AND ARE VALID IN THE DATABASE BEFORE PROCEEDING WITH AN UPDATE/DELETE */
 
     // this provides protection against injecting * into the statement and limits the amount of records to be updated
-
     public static boolean updateDeleteDataCheck(String table, String column, String field) throws SQLException
     {
         try
@@ -146,7 +160,7 @@ public class Database {
             String query = "SELECT * FROM " + table + " WHERE " + column + " = ?;";
 
             // get the connection and created a prepared statement using above string
-            PreparedStatement statement = Database.dbConnection().prepareStatement(query);
+            PreparedStatement statement = UtilsDatabase.dbConnection().prepareStatement(query);
 
             // set the field parameter - prepared statement guards against sql injection
             statement.setString(1, field.trim().replace("_", " "));
@@ -158,6 +172,7 @@ public class Database {
             return rs.isBeforeFirst();
         }
 
+        //if an exception is thrown return false
         catch(SQLException e)
         {
             return false;

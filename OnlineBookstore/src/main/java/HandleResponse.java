@@ -44,7 +44,7 @@ public class HandleResponse {
 
 
         // check that the tablename is valid
-        if(Database.tableNameExists(tableName.toLowerCase()))
+        if(UtilsDatabase.tableNameExists(tableName.toLowerCase()))
         {
 
             /* ------------ ADD AN ENTRY TO THE DATABASE ------------ */
@@ -90,8 +90,8 @@ public class HandleResponse {
 
                     //add first line to the response
                     response.append("\n~~/SEARCH RESULTS FOR '" + searchTerm.toUpperCase() +
-                            "' ON TABLE '" + tableName.toUpperCase() +
-                            "'/~~\n");
+                                        "' ON TABLE '" + tableName.toUpperCase() +
+                                        "'/~~\n");
 
                     // call the searchTable method and append the result
                     response.append(Read.searchTable(tableName, searchTerm));
@@ -122,8 +122,10 @@ public class HandleResponse {
                     before proceeding with an update/delete.
                     This provides protection against injecting * into the statement
                     and limits the amount of records to be updated */
-                    if (Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[2], clientDataArray[3])
-                        && Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[7], clientDataArray[9]))
+                    if (UtilsDatabase.updateDeleteDataCheck(
+                            clientDataArray[0], clientDataArray[2], clientDataArray[3])
+                        && UtilsDatabase.updateDeleteDataCheck(
+                                clientDataArray[0], clientDataArray[7], clientDataArray[9]))
                     {
                         try
                         {
@@ -165,7 +167,7 @@ public class HandleResponse {
                     before proceeding with an update/delete.
                     This provides protection against injecting * into the statement
                     and limits the amount of records to be updated */
-                    if(Database.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
+                    if(UtilsDatabase.updateDeleteDataCheck(clientDataArray[0], clientDataArray[3], clientDataArray[5]))
                     {
                         try
                         {
@@ -193,17 +195,18 @@ public class HandleResponse {
             }
 
 
-            /* ------------ BOOK COMMAND IS NOT RECOGNISED ------------ */
+            /* ------------ COMMAND IS NOT RECOGNISED ------------ */
 
             // if the command does not exist return an error message
             else
             {
-                return "No action exists for command '" + clientDataArray[1] + "' on table '" + clientDataArray[0] + "'";
+                return "No action exists for command '" +
+                        clientDataArray[1] + "' on table '" + clientDataArray[0] + "'";
             }
         }
 
 
-        /* TABLE DOES NOT EXIST */
+        /* ------------ TABLE DOES NOT EXIST ------------ */
 
         // if the table does not exist return an error message
         else
